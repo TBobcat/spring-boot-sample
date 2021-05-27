@@ -16,7 +16,7 @@ jobs:
           command: |
             echo 'export ECR_REPOSITORY_NAME="${AWS_RESOURCE_NAME_PREFIX}"' >> $BASH_ENV
 
-            if [ "${CIRCLE_BRANCH}" == "master" ]
+            if [ "${CIRCLE_BRANCH}" == "main" ]
             then
               echo 'export FULL_IMAGE_NAME="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:latest-qa"' >> $BASH_ENV
             elif [ "${CIRCLE_BRANCH}" == "release" ]
@@ -56,7 +56,7 @@ jobs:
       - run:
           name: Force Update Existing Service
           command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ]
+            if [ "${CIRCLE_BRANCH}" == "main" ]
             then
                aws ecs update-service --cluster qa-ecs-cluster --service search-ecs-service-qa --force-new-deployment
             elif [ "${CIRCLE_BRANCH}" == "release" ]
@@ -70,13 +70,13 @@ workflows:
       - build_and_deploy:
           filters:
             branches:
-              only: master
+              only: main
       - update:
           requires:
             - build_and_deploy
           filters:
             branches:
-              only: master
+              only: main
   build-deploy-prod:
     jobs:
       - build_and_deploy:
